@@ -22,8 +22,8 @@ public class PostRankingsBolt extends BaseBasicBolt {
 
 	public Connection getDBConnection() {
 	    //String connString = "jdbc:mysql://172.22.138.173:3306/sentweet";
-	    String connString = "jdbc:mysql://localhost:3306/sentweet";
-	    String userName = "root";
+	    String connString = "jdbc:mysql://172.22.138.85:3306/sentweet";
+	    String userName = "stuser";
 	    String password = "admin123";
 		try {
 			if(dbConnection == null)

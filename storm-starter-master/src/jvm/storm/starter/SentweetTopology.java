@@ -34,16 +34,16 @@ public class SentweetTopology {
 
     private static Config createTopologyConfiguration() {
         Config conf = new Config();
-	conf.setNumWorkers(30);
+	conf.setNumWorkers(40);
 	conf.setMaxSpoutPending(5000);
         return conf;
     }
 
     private void wireTopology() throws InterruptedException {
         builder.setSpout("twitterSpout", new TwitterSampleSpout());
-        builder.setBolt("extractHashTags", new ExtractHashTagsBolt(), 4).setNumTasks(4).shuffleGrouping("twitterSpout");
-        builder.setBolt("counter", new RollingCountBolt(300, 5), 8).setNumTasks(4).fieldsGrouping("extractHashTags", new Fields("hashtag"));
-        builder.setBolt("intermediateRanker", new IntermediateRankingsBolt(TOP_N), 8).setNumTasks(4).fieldsGrouping("counter", new Fields("obj"));
+        builder.setBolt("extractHashTags", new ExtractHashTagsBolt(), 8).setNumTasks(32).shuffleGrouping("twitterSpout");
+        builder.setBolt("counter", new RollingCountBolt(300, 5), 8).setNumTasks(32).fieldsGrouping("extractHashTags", new Fields("hashtag"));
+        builder.setBolt("intermediateRanker", new IntermediateRankingsBolt(TOP_N), 2).setNumTasks(8).fieldsGrouping("counter", new Fields("obj"));
         builder.setBolt("finalRanker", new TotalRankingsBolt(TOP_N, 5)).globalGrouping("intermediateRanker");
         builder.setBolt("rankPoster", new PostRankingsBolt()).shuffleGrouping("finalRanker");
     }
